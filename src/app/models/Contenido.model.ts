@@ -2,9 +2,6 @@ export interface Contenido {
     contenido : Archivo | Carpeta
 }
 
-export interface Drive{
-    drive : Contenido
-}
 
 
 export interface Archivo {

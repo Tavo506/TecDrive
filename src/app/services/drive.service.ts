@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Drive } from '../models/Contenido.model';
+import { Contenido } from '../models/Contenido.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +16,14 @@ export class DriveService {
         "tipo" : "carpeta",
         "creacion" : "16/11/2021",
         "modificacion" : "16/11/2021",
-        "tamaño" : "5000",
+        "tamaño" : 5000,
         "compartido" : [
             {
                 "nombre" : "Usuario 2",
                 "tipo" : "carpeta",
                 "creacion" : "16/11/2021",
                 "modificacion" : "16/11/2021",
-                "tamaño" : "5000",
+                "tamaño" : 5000,
                 "contenido" : [
                     {
                         "nombre" : "Ejemplo 2",
@@ -31,7 +31,7 @@ export class DriveService {
                         "extension" : "txt",
                         "creacion" : "16/11/2021",
                         "modificacion" : "16/11/2021",
-                        "tamaño" : "5000",
+                        "tamaño" : 5000,
                         "contenido" : "Hola Mundo 2!!",
                         "compartido" : []
                     }
@@ -44,7 +44,7 @@ export class DriveService {
                 "tipo" : "carpeta",
                 "creacion" : "16/11/2021",
                 "modificacion" : "16/11/2021",
-                "tamaño" : "5000",
+                "tamaño" : 5000,
                 "contenido" : []
             },
             {
@@ -53,7 +53,7 @@ export class DriveService {
                 "extension" : "txt",
                 "creacion" : "16/11/2021",
                 "modificacion" : "16/11/2021",
-                "tamaño" : "5000",
+                "tamaño" : 5000,
                 "contenido" : "Hola Mundo!!",
                 "compartido" : []
             }
@@ -65,7 +65,7 @@ export class DriveService {
         "tipo" : "carpeta",
         "creacion" : "16/11/2021",
         "modificacion" : "16/11/2021",
-        "tamaño" : "5000",
+        "tamaño" : 5000,
         "compartido" : [],
         "contenido" : [
             {
@@ -73,7 +73,7 @@ export class DriveService {
                 "tipo" : "carpeta",
                 "creacion" : "16/11/2021",
                 "modificacion" : "16/11/2021",
-                "tamaño" : "5000",
+                "tamaño" : 5000,
                 "contenido" : []
             },
             {
@@ -82,7 +82,7 @@ export class DriveService {
                 "extension" : "txt",
                 "creacion" : "16/11/2021",
                 "modificacion" : "16/11/2021",
-                "tamaño" : "5000",
+                "tamaño" : 5000,
                 "contenido" : "Hola Mundo 2!!",
                 "compartido" : [
                     "Usuario 1"
@@ -97,9 +97,9 @@ export class DriveService {
 
 
 
-getDrive(userName: string) : any {
+getDrive(userName: string) : Contenido {
 
-  return this.dummy[userName];
+  return this.dummy[userName] as Contenido;
 }
 
 }

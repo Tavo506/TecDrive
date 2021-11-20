@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Contenido } from 'src/app/models/Contenido.model';
 import { DriveService } from 'src/app/services/drive.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { DriveService } from 'src/app/services/drive.service';
 })
 export class HomeComponent implements OnInit {
 
-  datos = {}
+  datos : Contenido;
   usuario : string;
 
   constructor(private driveService : DriveService, private activatedRoute:ActivatedRoute) { }
