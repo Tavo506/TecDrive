@@ -10,7 +10,7 @@ import { DriveService } from 'src/app/services/drive.service';
 export class HomeComponent implements OnInit {
 
   datos = {}
-  usuario : String;
+  usuario : string;
 
   constructor(private driveService : DriveService, private activatedRoute:ActivatedRoute) { }
 

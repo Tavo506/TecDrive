@@ -3,7 +3,7 @@ export interface Contenido {
 }
 
 export interface Drive{
-    usuario : Contenido[]
+    drive : Contenido
 }
 
 
@@ -11,8 +11,8 @@ export interface Archivo {
     nombre : string,
     tipo : "archivo",
     extension : string,
-    creacion : Date,
-    modificacion : Date,
+    creacion : string,
+    modificacion : string,
     tamaño : number,
     contenido : string,
     compartido : string[]
@@ -22,9 +22,9 @@ export interface Archivo {
 export interface Carpeta {
     nombre : string,
     tipo : "carpeta",
-    creacion : Date,
-    modificacion : Date,
+    creacion : string,
+    modificacion : string,
     tamaño : number,
-    contenido : Contenido[]
+    contenido? : Contenido[]
     compartido : string[],
 }

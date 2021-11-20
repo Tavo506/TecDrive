@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Drive } from '../models/Contenido.model';
 
 @Injectable({
   providedIn: 'root'
@@ -7,8 +8,10 @@ export class DriveService {
 
   constructor() { }
 
-  dummy = {
-    "Usuario 1" : {
+
+
+  dummy: any = {
+    "Usuario_1" : {
         "nombre" : "root",
         "tipo" : "carpeta",
         "creacion" : "16/11/2021",
@@ -57,7 +60,7 @@ export class DriveService {
         ]
     },
 
-    "Usuario 2" : {
+    "Usuario_2" : {
         "nombre" : "root",
         "tipo" : "carpeta",
         "creacion" : "16/11/2021",
@@ -90,8 +93,13 @@ export class DriveService {
 }
 
 
-  getDrive(userName:String) : any {
-    return this.dummy["Usuario 1"];
-  }
+
+
+
+
+getDrive(userName: string) : any {
+
+  return this.dummy[userName];
+}
 
 }
