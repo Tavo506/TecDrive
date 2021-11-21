@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
     this.go(path);
   }
 
+
   go(path : string[]){
     this.pathActual = this.clone(this.datos);
     var lista;
@@ -94,5 +95,6 @@ export class HomeComponent implements OnInit {
     this.pathActual = this.clone(this.datos);
     this.path = []
   }
+
 
 }

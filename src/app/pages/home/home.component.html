@@ -1,6 +1,6 @@
 <div class="contenedor">
 
-    
+
     <span (click)="goToRoot()" class="enlace">{{usuario}}</span>
     <span *ngFor="let ruta of path"> / <span (click)="goBackTo(ruta)" class="enlace">{{ruta}}</span></span>
 
@@ -15,17 +15,38 @@
         </thead>
         <tbody>
             <tr *ngFor="let fila of pathActual.contenido">
-                <th><input type="checkbox"></th>
-                <th>
-                    <i class="fas" [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
+                <th class="align-middle"><input type="checkbox"></th>
+                <th class="align-middle">
+                    <i class="fas"
+                        [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
                 </th>
-                <th>
-                    <span class="enlace" *ngIf="fila.tipo == 'archivo'" (click)="open(fila)">{{fila.nombre}}.{{fila.extension}}</span>
-                    <span class="enlace" *ngIf="fila.tipo == 'carpeta'" (click)="goToPath(path, fila.nombre)">{{fila.nombre}}</span>
+                <th class="align-middle">
+                    <span class="enlace" *ngIf="fila.tipo == 'archivo'"
+                        (click)="open(fila)">{{fila.nombre}}.{{fila.extension}}</span>
+                    <span class="enlace" *ngIf="fila.tipo == 'carpeta'"
+                        (click)="goToPath(path, fila.nombre)">{{fila.nombre}}</span>
                 </th>
-                <th><i class="fas fa-ellipsis-v"></i></th>
+                <th class="align-middle">
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn" id="dropdownBasic1" ngbDropdownToggle><i
+                                class="fas fa-ellipsis-v"></i></button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                            <button ngbDropdownItem>Editar</button>
+                            <button ngbDropdownItem>Compartir</button>
+                            <button ngbDropdownItem>Copiar</button>
+                            <button ngbDropdownItem>Mover</button>
+                            <button ngbDropdownItem>Propiedades</button>
+                            <hr>
+                            <button class="eliminar" ngbDropdownItem>Eliminar</button>
+                        </div>
+                    </div>
+
+                </th>
+
             </tr>
         </tbody>
     </table>
+
+
 
 </div>

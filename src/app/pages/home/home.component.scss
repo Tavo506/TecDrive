@@ -16,3 +16,17 @@
 .fas{
     font-size: 22px;
 }
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+.eliminar:hover, .eliminar:focus {
+    background: #d9534f;
+    color: white;
+}
