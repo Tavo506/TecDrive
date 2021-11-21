@@ -59,6 +59,22 @@ export class HomeComponent implements OnInit {
   open(archivo : Archivo){
     const modalRef = this.modalService.open(fileViewModal, {size: 'xl', scrollable: true, centered: true});
     modalRef.componentInstance.archivo = archivo;
+    modalRef.componentInstance.texto = archivo.contenido;
+
+    modalRef.result.then((result) => {
+      
+      if (result.accion == 'guardar' && result.res != archivo.contenido) {
+        
+        console.log("Hay cambios");
+        archivo.contenido = result.res;
+
+        this.driveService.modificarArchivo(this.path.join("/"), archivo)
+        
+      }
+      
+    }, (reason) => {
+      //`Dismissed ${this.getDismissReason(reason)}`;
+    });
   }
 
 
@@ -69,11 +85,6 @@ export class HomeComponent implements OnInit {
     modalRef.componentInstance.contenido = contenido;
     modalRef.componentInstance.build();
 
-    modalRef.result.then((result) => {
-      `Closed with: ${result}`;
-    }, (reason) => {
-      //`Dismissed ${this.getDismissReason(reason)}`;
-    });
   
   }
 

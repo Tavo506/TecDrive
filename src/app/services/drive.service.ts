@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Contenido } from '../models/Contenido.model';
+import { Archivo, Contenido } from '../models/Contenido.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +12,7 @@ export class DriveService {
 
     dummy: any = {
         "Usuario_1": {
+            "limite":500000,
             "nombre": "root",
             "tipo": "carpeta",
             "creacion": "16/11/2021",
@@ -71,6 +72,7 @@ export class DriveService {
         },
 
         "Usuario_2": {
+            "limite":350000,
             "nombre": "root",
             "tipo": "carpeta",
             "creacion": "16/11/2021",
@@ -110,6 +112,17 @@ export class DriveService {
     getDrive(userName: string): Contenido {
 
         return this.dummy[userName] as Contenido;
+    }
+
+
+    modificarArchivo(path:String, archivo: Archivo){
+        const nombre = archivo.nombre;
+        const tipo = archivo.extension;
+        const contenido = archivo.contenido;
+
+
+        //modificarArchivo(path, nombre, tipo, contenido);
+        
     }
 
 }
