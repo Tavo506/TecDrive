@@ -125,4 +125,13 @@ export class DriveService {
         
     }
 
+    eliminar(path:String, nombres:String[], tiposArchivo:String[]){
+        console.log(path);
+        console.log(nombres);
+        console.log(tiposArchivo);
+
+        //eliminar(path, nombres, tiposArchivo);
+        
+    }
+
 }
