@@ -31,11 +31,12 @@
                         <button class="btn" id="dropdownBasic1" ngbDropdownToggle><i
                                 class="fas fa-ellipsis-v"></i></button>
                         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                            <button ngbDropdownItem>Editar</button>
+                            <button (click)="goToPath(path, fila.nombre)" *ngIf="fila.tipo == 'carpeta'" ngbDropdownItem>Abrir</button>
+                            <button (click)="open(fila)" *ngIf="fila.tipo == 'archivo'" ngbDropdownItem>Editar</button>
                             <button ngbDropdownItem>Compartir</button>
                             <button ngbDropdownItem>Copiar</button>
                             <button ngbDropdownItem>Mover</button>
-                            <button ngbDropdownItem>Propiedades</button>
+                            <button (click)="verPropiedades(fila)" ngbDropdownItem>Propiedades</button>
                             <hr>
                             <button class="eliminar" ngbDropdownItem>Eliminar</button>
                         </div>

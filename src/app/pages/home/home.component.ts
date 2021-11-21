@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Archivo, Contenido } from 'src/app/models/Contenido.model';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Archivo, Carpeta, Contenido } from 'src/app/models/Contenido.model';
 import { DriveService } from 'src/app/services/drive.service';
+import { fileViewModal } from 'src/app/widgets/modals/fileView';
+import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
 
 import Swal from 'sweetalert2'
+
+
+
+
 
 @Component({
   selector: 'app-home',
@@ -19,7 +26,12 @@ export class HomeComponent implements OnInit {
 
   path : string[] = [];
 
-  constructor(private driveService : DriveService, private activatedRoute:ActivatedRoute) { }
+  constructor(
+    private driveService : DriveService,
+    private activatedRoute:ActivatedRoute, 
+    private modalService : NgbModal,
+    private modalConfig: NgbModalConfig
+    ) { }
 
   ngOnInit(): void {
 
@@ -29,6 +41,9 @@ export class HomeComponent implements OnInit {
 
     this.datos = this.driveService.getDrive(this.usuario);
     this.pathActual = this.clone(this.datos);    
+
+    this.modalConfig.backdrop = 'static';
+    this.modalConfig.keyboard = false;
   }
 
 
@@ -42,10 +57,26 @@ export class HomeComponent implements OnInit {
 
 
   open(archivo : Archivo){
-    Swal.fire({
-      title: `${archivo.nombre}.${archivo.extension}`
-    })
+    const modalRef = this.modalService.open(fileViewModal, {size: 'xl', scrollable: true, centered: true});
+    modalRef.componentInstance.archivo = archivo;
   }
+
+
+
+  verPropiedades(contenido : Archivo | Carpeta){
+
+    const modalRef = this.modalService.open(propiedadesModal, {scrollable: true, centered: true});
+    modalRef.componentInstance.contenido = contenido;
+    modalRef.componentInstance.build();
+
+    modalRef.result.then((result) => {
+      `Closed with: ${result}`;
+    }, (reason) => {
+      //`Dismissed ${this.getDismissReason(reason)}`;
+    });
+  
+  }
+
 
 
   goToPath(path : string[], carpeta : string){
