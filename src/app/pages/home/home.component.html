@@ -39,18 +39,18 @@
         </thead>
         <tbody>
             <tr *ngFor="let fila of pathActual.contenido">
-                <th class="align-middle"><input type="checkbox"></th>
-                <th class="align-middle">
+                <td class="align-middle"><input type="checkbox"></td>
+                <td class="align-middle">
                     <i class="fas big-icon"
                         [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
-                </th>
-                <th class="align-middle">
+                </td>
+                <td class="align-middle">
                     <span class="enlace" *ngIf="fila.tipo == 'archivo'"
                         (click)="open(fila)">{{fila.nombre}}.{{fila.extension}}</span>
                     <span class="enlace" *ngIf="fila.tipo == 'carpeta'"
                         (click)="goToPath(path, fila.nombre)">{{fila.nombre}}</span>
-                </th>
-                <th class="align-middle">
+                </td>
+                <td class="align-middle">
                     <div ngbDropdown class="d-inline-block">
                         <button class="btn" id="dropdownAcciones" ngbDropdownToggle><i
                                 class="fas big-icon fa-ellipsis-v"></i></button>
@@ -59,16 +59,16 @@
                                 ngbDropdownItem>Abrir</button>
                             <button (click)="open(fila)" *ngIf="fila.tipo == 'archivo'" ngbDropdownItem>Editar</button>
                             <button (click)="compartir(fila)" ngbDropdownItem>Compartir</button>
-                            <button ngbDropdownItem>Descargar</button>
-                            <button ngbDropdownItem>Copiar</button>
-                            <button ngbDropdownItem>Mover</button>
+                            <button (click)="descargar(fila)" ngbDropdownItem>Descargar</button>
+                            <button (click)="copiar(fila)" ngbDropdownItem>Copiar</button>
+                            <button (click)="mover(fila)" ngbDropdownItem>Mover</button>
                             <button (click)="verPropiedades(fila)" ngbDropdownItem>Propiedades</button>
                             <hr>
                             <button (click)="eliminarUno(path, fila)" class="eliminar" ngbDropdownItem>Eliminar</button>
                         </div>
                     </div>
 
-                </th>
+                </td>
 
             </tr>
         </tbody>

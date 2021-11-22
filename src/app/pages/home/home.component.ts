@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Archivo, Carpeta, Contenido } from 'src/app/models/Contenido.model';
 import { DriveService } from 'src/app/services/drive.service';
+import { directorySearchModal } from 'src/app/widgets/modals/directorySearch';
 import { fileCreateModal } from 'src/app/widgets/modals/fileCreate';
 import { fileViewModal } from 'src/app/widgets/modals/fileView';
 import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
@@ -53,7 +54,7 @@ export class HomeComponent implements OnInit {
 
     res = { ...lista }
 
-    return lista
+    return res
   }
 
 
@@ -217,6 +218,55 @@ export class HomeComponent implements OnInit {
     })
 
   }
+
+
+
+
+  descargar(archivo : Contenido){
+
+  }
+
+
+
+
+
+  seleccionarCarpeta() : string[]{
+    const modalRef = this.modalService.open(directorySearchModal, { size: 'xl', scrollable: true, centered: true });
+    modalRef.componentInstance.datos = this.datos;
+    modalRef.componentInstance.usuario = this.usuario;
+    modalRef.componentInstance.build();
+
+    modalRef.result.then((result) => {
+
+      if (result.accion == 'guardar') {
+
+        console.log(result.res);
+
+
+      }
+
+    }, (reason) => {
+      //`Dismissed ${this.getDismissReason(reason)}`;
+    });
+    return [];
+  }
+
+
+
+  copiar(archivo : Contenido){
+
+    const rutaCopiar : string[] = this.seleccionarCarpeta();
+
+  }
+
+
+  mover(archivo : Contenido){
+
+    const rutaMover : string[] = this.seleccionarCarpeta();
+
+  }
+
+
 
 
 
