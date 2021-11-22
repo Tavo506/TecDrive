@@ -1,0 +1,63 @@
+.modal-dialog{
+    padding-top: 200px;
+}
+.main-section{
+    margin: 0 auto;
+    margin-top: 25%;
+    padding: 0 ;
+}
+
+.modal-content{
+    background-color: #3b3b3b;
+    opacity: .80;
+    padding: 0 15px;
+    box-shadow: 0px 0px 3px #848484;
+    
+}
+
+.img-icon{
+    margin-top: -50px;
+    margin-bottom: 35px;
+}
+
+.img-icon img{
+    width: 100px;
+    height: 100px;
+    box-shadow: 0px 0px 3px #848484;
+    border-radius: 50%;
+}
+
+.form-group input{
+    height: 42px;
+    font-size: 18px;
+    border: 0;
+    padding-left: 54px ;
+    border-radius: 5px; 
+}
+
+.form-group::before{
+    font-family: "Font Awesome\ 5 Free";
+    position: absolute;
+    left: 28px;
+    font-size: 22px;
+    padding-top: 4px;
+}
+
+.form-group#user::before{
+    content: "\f007";
+}
+
+
+button{
+    width: 60%;
+    margin: 5px 0 25px;
+}
+
+.registrarse{
+    padding: 5px 0;
+}
+
+.registrarse a{
+    color: white;
+    font-weight: lighter;
+}
