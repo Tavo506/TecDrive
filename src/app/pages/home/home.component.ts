@@ -6,8 +6,9 @@ import { DriveService } from 'src/app/services/drive.service';
 import { fileCreateModal } from 'src/app/widgets/modals/fileCreate';
 import { fileViewModal } from 'src/app/widgets/modals/fileView';
 import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
-
+import { newArchivo, newCarpeta }  from 'src/app/functions/fileFunctions';
 import Swal from 'sweetalert2'
+import { HtmlParser } from '@angular/compiler';
 
 
 
@@ -123,14 +124,16 @@ export class HomeComponent implements OnInit {
 
     Swal.fire({
       title: "Cargar un archivo",
-      html: "<input type='file'>",
+      input: "file",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Carga el archivo
+           var file : Archivo = this.parsearArchivo(result.value);
+           console.log(file)
+          //Falta enviar el archivo
       }
     })
 
@@ -142,13 +145,23 @@ export class HomeComponent implements OnInit {
 
     Swal.fire({
       title: "Cargar una carpeta",
-      html: "<input type='file' id='ctrl' webkitdirectory directory multiple>",
+     html: "<input type='file' webkitdirectory directory multiple id=directory >",
+     preConfirm: () =>  {  return document.getElementById('directory')},
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        var refDirectory : FileList = (<HTMLInputElement>result.value).files
+        console.log((<HTMLInputElement>result.value).files.length)
+        var listFiles : any[] = []
+        for(let i=0; i< (<HTMLInputElement>result.value).files.length; i++){
+          var file : Archivo = this.parsearArchivo((<HTMLInputElement>result.value).files[i]);
+          listFiles.push(file)
+          console.log(file)
+        }
+        
         //Carga el archivo
       }
     })
@@ -156,9 +169,21 @@ export class HomeComponent implements OnInit {
   }
 
 
+/*
+      ========================================
+        Funciones para carga de archivos
+      ========================================
+  */
 
-
-
+    parsearArchivo(file : File) :  Archivo{
+        var archivo : Archivo = newArchivo();
+        var spliData = file.name.split('.')
+        archivo.nombre = spliData[0];
+        archivo.extension = spliData[1];
+        archivo.tamaño = file.size;
+        file.text().then( data => {archivo.contenido = data});
+        return archivo;
+    }
 
 
   /*
