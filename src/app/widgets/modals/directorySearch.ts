@@ -72,7 +72,6 @@ export class directorySearchModal {
                 if (e == ruta) {
                     parar = true;
 
-                    console.log(newPath);
                     this.path = newPath;
 
                     this.go(newPath);

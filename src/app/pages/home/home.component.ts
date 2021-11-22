@@ -60,8 +60,8 @@ export class HomeComponent implements OnInit {
 
 
 
-  refresh(){
-    
+  refresh() {
+
   }
 
 
@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
 
       if (result.accion == 'guardar') {
 
-        console.log("Hay cambios");
+        console.log(result.res);
 
 
       }
@@ -91,18 +91,21 @@ export class HomeComponent implements OnInit {
 
 
 
-  crearCarpeta(){
+  crearCarpeta() {
 
     Swal.fire({
       title: "Crear directorio",
-      html: "<input class='form-control' type='text' placeholder='Nombre'>",
+      input: "text",
+      inputPlaceholder: "Nombre",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Mándelo al back-end
+        const archivo = result.value;
+        console.log(archivo);
+
       }
     })
 
@@ -120,7 +123,7 @@ export class HomeComponent implements OnInit {
 
 
 
-  cargarArchivo(){
+  cargarArchivo() {
 
     Swal.fire({
       title: "Cargar un archivo",
@@ -132,7 +135,7 @@ export class HomeComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log(result);
-        
+
       }
     })
 
@@ -140,7 +143,7 @@ export class HomeComponent implements OnInit {
 
 
 
-  cargarCarpeta(){
+  cargarCarpeta() {
 
     Swal.fire({
       title: "Cargar una carpeta",
@@ -203,18 +206,22 @@ export class HomeComponent implements OnInit {
 
 
 
-  compartir(contenido: Contenido){
+  compartir(contenido: Archivo | Carpeta) {
 
     Swal.fire({
       title: "Compartir",
-      html: "<input class='form-control' type='text' placeholder='Usuario para compartir'>",
+      input: "text",
+      inputPlaceholder: "Usuario para compartir",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Mándelo al back-end
+        const usuario = result.value.replace(" ", "_");
+        const tipo = contenido.tipo == "archivo" ? contenido.extension : "carpeta";
+        this.driveService.compartir(this.usuario, usuario, this.path.join("/"), contenido.nombre, tipo)
+
       }
     })
 
@@ -223,7 +230,7 @@ export class HomeComponent implements OnInit {
 
 
 
-  descargar(archivo : Archivo){
+  descargar(archivo: Archivo) {
     if (archivo.tipo == "archivo") {
       const text = archivo.contenido;
       const filename = archivo.nombre + "." + archivo.extension;
@@ -245,39 +252,62 @@ export class HomeComponent implements OnInit {
 
 
 
-  seleccionarCarpeta() : string[]{
-    const modalRef = this.modalService.open(directorySearchModal, { size: 'xl', scrollable: true, centered: true });
-    modalRef.componentInstance.datos = this.datos;
-    modalRef.componentInstance.usuario = this.usuario;
-    modalRef.componentInstance.build();
+  seleccionarCarpeta(): Promise<{ confirm: boolean, value: any }> {
 
-    modalRef.result.then((result) => {
-
-      if (result.accion == 'guardar') {
-
-        console.log(result.res);
+    return new Promise((resolve, reject) => {
 
 
+      const modalRef = this.modalService.open(directorySearchModal, { size: 'lg', scrollable: true, centered: true });
+      modalRef.componentInstance.datos = this.datos;
+      modalRef.componentInstance.usuario = this.usuario;
+      modalRef.componentInstance.build();
+
+      modalRef.result.then((result) => {
+
+        if (result.accion == 'guardar') {
+
+          resolve({ confirm: true, value: result.res });
+        } else {
+          resolve({ confirm: false, value: "" });
+        }
+
+      }, (reason) => {
+        resolve({ confirm: false, value: "" });
+      });
+
+    })
+  }
+
+
+
+  copiar(archivo: Archivo | Carpeta) {
+
+    this.seleccionarCarpeta().then(rutaCopiar => {
+
+      if (rutaCopiar.confirm) {      
+
+        const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
+
+        this.driveService.copiar(this.path.join("/"), archivo.nombre, tipo, rutaCopiar.value.join("/"));
       }
 
-    }, (reason) => {
-      //`Dismissed ${this.getDismissReason(reason)}`;
     });
-    return [];
-  }
-
-
-
-  copiar(archivo : Contenido){
-
-    const rutaCopiar : string[] = this.seleccionarCarpeta();
 
   }
 
 
-  mover(archivo : Contenido){
+  mover(archivo: Archivo | Carpeta) {
 
-    const rutaMover : string[] = this.seleccionarCarpeta();
+    this.seleccionarCarpeta().then(rutaCopiar => {
+
+      if (rutaCopiar.confirm) {
+
+        const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
+
+        this.driveService.mover(this.path.join("/"), archivo.nombre, tipo, rutaCopiar.value.join("/"));
+      }
+
+    });
 
   }
 
@@ -369,7 +399,6 @@ export class HomeComponent implements OnInit {
         if (e == ruta) {
           parar = true;
 
-          console.log(newPath);
           this.path = newPath;
 
           this.go(newPath);

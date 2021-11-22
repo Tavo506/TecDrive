@@ -59,6 +59,16 @@ export class DriveService {
                     "compartido": []
                 },
                 {
+                    "nombre": "Programa",
+                    "tipo": "archivo",
+                    "extension": "py",
+                    "creacion": "22/11/2021",
+                    "modificacion": "22/11/2021",
+                    "tamaño": 2651,
+                    "contenido": "def main():\n\tprint('Hola Mundo')\n\nmain()",
+                    "compartido": []
+                },
+                {
                     "nombre": "Lorem ipsum",
                     "tipo": "archivo",
                     "extension": "txt",
@@ -124,6 +134,45 @@ export class DriveService {
         //modificarArchivo(path, nombre, tipo, contenido);
         
     }
+
+
+
+    compartir(usuario: string, nuevoUsuario:string, path: string, nombre:string, tipoArchivo:string){
+        console.log(usuario);
+        console.log(nuevoUsuario);
+        console.log(path);
+        console.log(nombre);
+        console.log(tipoArchivo);
+        
+        //if nuevoUsuario existe
+        //compartir(usuario, nuevoUsuario, path, nombre, tipoArchivo);
+    }
+
+
+
+
+    copiar(path:String, nombre:String, tipoArchivo:String, nuevoPath:String){
+        console.log(path);
+        console.log(nombre);
+        console.log(tipoArchivo);
+        console.log(nuevoPath);
+
+        //copiar(path, nombre, tipoArchivo, nuevoPath);
+
+    }
+
+
+
+    mover(path:String, nombre:String, tipoArchivo:String, nuevoPath:String){
+
+        this.copiar(path, nombre, tipoArchivo, nuevoPath);
+
+        this.eliminar(path, [nombre], [tipoArchivo])
+
+    }
+
+
+
 
     eliminar(path:String, nombres:String[], tiposArchivo:String[]){
         console.log(path);
