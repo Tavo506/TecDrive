@@ -19,8 +19,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
         <button type="button" class="btn btn-outline-danger" (click)="activeModal.close({accion: 'cancelado', res: ''})">Cerrar</button>
         <button type="button" class="btn btn-outline-success" (click)="activeModal.close({accion: 'guardar', res: texto})">Guardar</button>
     </div>
-  `,
-    styleUrls: ['./fileView.scss']
+  `
 })
 export class fileViewModal {
     @Input() archivo;

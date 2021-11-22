@@ -1,3 +1,26 @@
+<nav class="navbar navbar-dark bg-light justify-content-left">
+    <div>
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn" id="dropdownNuevo" ngbDropdownToggle><i class="fas fa-plus"></i> Nuevo <i class="fas fa-caret-down"></i></button>
+            <div ngbDropdownMenu aria-labelledby="dropdownNuevo">
+                <button (click)="crearArchivo()" ngbDropdownItem>Archivo</button>
+                <button (click)="crearCarpeta()" ngbDropdownItem>Directorio</button>
+            </div>
+        </div>
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn" id="dropdownCargar" ngbDropdownToggle><i class="fas fa-upload"></i> Cargar <i class="fas fa-caret-down"></i></button>
+            <div ngbDropdownMenu aria-labelledby="dropdownCargar">
+                <button (click)="cargarArchivo()" ngbDropdownItem>Archivo</button>
+                <button (click)="cargarCarpeta()" ngbDropdownItem>Directorio</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</nav>
+
+
 <div class="contenedor">
 
 
@@ -17,7 +40,7 @@
             <tr *ngFor="let fila of pathActual.contenido">
                 <th class="align-middle"><input type="checkbox"></th>
                 <th class="align-middle">
-                    <i class="fas"
+                    <i class="fas big-icon"
                         [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
                 </th>
                 <th class="align-middle">
@@ -28,12 +51,14 @@
                 </th>
                 <th class="align-middle">
                     <div ngbDropdown class="d-inline-block">
-                        <button class="btn" id="dropdownBasic1" ngbDropdownToggle><i
-                                class="fas fa-ellipsis-v"></i></button>
-                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                            <button (click)="goToPath(path, fila.nombre)" *ngIf="fila.tipo == 'carpeta'" ngbDropdownItem>Abrir</button>
+                        <button class="btn" id="dropdownAcciones" ngbDropdownToggle><i
+                                class="fas big-icon fa-ellipsis-v"></i></button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownAcciones">
+                            <button (click)="goToPath(path, fila.nombre)" *ngIf="fila.tipo == 'carpeta'"
+                                ngbDropdownItem>Abrir</button>
                             <button (click)="open(fila)" *ngIf="fila.tipo == 'archivo'" ngbDropdownItem>Editar</button>
-                            <button ngbDropdownItem>Compartir</button>
+                            <button (click)="compartir(fila)" ngbDropdownItem>Compartir</button>
+                            <button ngbDropdownItem>Descargar</button>
                             <button ngbDropdownItem>Copiar</button>
                             <button ngbDropdownItem>Mover</button>
                             <button (click)="verPropiedades(fila)" ngbDropdownItem>Propiedades</button>
