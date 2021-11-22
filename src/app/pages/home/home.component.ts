@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Archivo, Carpeta, Contenido } from 'src/app/models/Contenido.model';
 import { DriveService } from 'src/app/services/drive.service';
+import { fileCreateModal } from 'src/app/widgets/modals/fileCreate';
 import { fileViewModal } from 'src/app/widgets/modals/fileView';
 import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
 
@@ -56,6 +57,102 @@ export class HomeComponent implements OnInit {
   }
 
 
+  /*
+      ========================================
+                Funciones de crear
+      ========================================
+  */
+
+
+  crearArchivo() {
+    const modalRef = this.modalService.open(fileCreateModal, { size: 'xl', scrollable: true, centered: true });
+
+    modalRef.result.then((result) => {
+
+      if (result.accion == 'guardar') {
+
+        console.log("Hay cambios");
+
+
+      }
+
+    }, (reason) => {
+      //`Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+
+
+  crearCarpeta(){
+
+    Swal.fire({
+      title: "Crear directorio",
+      html: "<input class='form-control' type='text' placeholder='Nombre'>",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Mándelo al back-end
+      }
+    })
+
+  }
+
+
+
+
+
+  /*
+       ========================================
+                 Funciones de cargar
+       ========================================
+   */
+
+
+
+  cargarArchivo(){
+
+    Swal.fire({
+      title: "Cargar un archivo",
+      html: "<input type='file'>",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Carga el archivo
+      }
+    })
+
+  }
+
+
+
+  cargarCarpeta(){
+
+    Swal.fire({
+      title: "Cargar una carpeta",
+      html: "<input type='file' id='ctrl' webkitdirectory directory multiple>",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Carga el archivo
+      }
+    })
+
+  }
+
+
+
+
+
+
 
   /*
       ========================================
@@ -97,6 +194,25 @@ export class HomeComponent implements OnInit {
 
 
 
+  compartir(contenido: Contenido){
+
+    Swal.fire({
+      title: "Compartir",
+      html: "<input class='form-control' type='text' placeholder='Usuario para compartir'>",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Mándelo al back-end
+      }
+    })
+
+  }
+
+
+
   prepararParaEliminar(listaArchivos: string[], listaTipos: string[], archivo) {
 
   }
@@ -128,6 +244,7 @@ export class HomeComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.driveService.eliminar(path.join("/"), [nombre], [extension]);
+
         Swal.fire(
           'Eliminado!',
           'El contenido se ha eliminado',

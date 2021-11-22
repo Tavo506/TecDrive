@@ -130,6 +130,8 @@ export class DriveService {
         console.log(nombres);
         console.log(tiposArchivo);
 
+        
+
         //eliminar(path, nombres, tiposArchivo);
         
     }
