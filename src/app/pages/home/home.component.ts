@@ -57,6 +57,13 @@ export class HomeComponent implements OnInit {
   }
 
 
+
+
+  refresh(){
+    
+  }
+
+
   /*
       ========================================
                 Funciones de crear
