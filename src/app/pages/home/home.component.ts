@@ -82,6 +82,8 @@ export class HomeComponent implements OnInit {
 
         console.log(result.res);
 
+        this.driveService.crearArchivo(this.path.join("/"), result.res.nombre, result.res.extension, result.res.text)
+
 
       }
 
@@ -106,6 +108,8 @@ export class HomeComponent implements OnInit {
       if (result.isConfirmed) {
         const archivo = result.value;
         console.log(archivo);
+
+        this.driveService.crearDirectorio(this.path.join("/"), archivo);
 
       }
     })

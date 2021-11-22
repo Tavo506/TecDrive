@@ -125,6 +125,20 @@ export class DriveService {
     }
 
 
+    crearArchivo(path:String, nombre:String, extension:String, contenido:String){
+        // Revisa si hay un nombre repetido y hay espacio
+        return // json de respuesta
+    }
+    
+    
+    
+    crearDirectorio(path:String, nombre:String){
+        // Revisa si hay un nombre repetido y hay espacio
+        return // json de respuesta
+    }
+    
+
+
     modificarArchivo(path:String, archivo: Archivo){
         const nombre = archivo.nombre;
         const tipo = archivo.extension;
