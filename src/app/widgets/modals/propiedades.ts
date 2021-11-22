@@ -38,8 +38,7 @@ import { formatBytes } from "src/app/functions/sizeFunctions";
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="activeModal.close(contenido)">Cerrar</button>
     </div>
-  `,
-    styleUrls: ['./fileView.scss']
+  `
 })
 export class propiedadesModal {
     @Input() contenido: Archivo | Carpeta;
