@@ -124,14 +124,15 @@ export class HomeComponent implements OnInit {
 
     Swal.fire({
       title: "Cargar un archivo",
-      html: "<input type='file'>",
+      input: "file",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        //Carga el archivo
+        console.log(result);
+        
       }
     })
 
@@ -223,7 +224,21 @@ export class HomeComponent implements OnInit {
 
 
   descargar(archivo : Contenido){
+    if (archivo.contenido.tipo == "archivo") {
+      const text = archivo.contenido.contenido;
+      const filename = archivo.contenido.nombre + "." + archivo.contenido.extension;
 
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    }
   }
 
 
