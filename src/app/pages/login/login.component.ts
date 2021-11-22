@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service'
 import Swal from 'sweetalert2';
 
@@ -13,13 +14,14 @@ export class LoginComponent implements OnInit {
 
 
 
-  constructor( private authService : AuthService) {}
+  constructor( private authService : AuthService, private router : Router) {}
 
 
   ngOnInit(): void { }
   
-  sendUserName(){
-    var username = (<HTMLInputElement>document.getElementById("inputUser")).value;
+  sendUserName(username:string){
+    
+    username = username.replace(" ","_");
     if(username === ''){
       Swal.fire({
         title : "Error 101",
@@ -29,6 +31,11 @@ export class LoginComponent implements OnInit {
       })
       return
     ;}
-    this.authService.login(username);
+    if(this.authService.login(username).res = true){
+      console.log(username)
+      this.router.navigate(["/home",username]);
+    }
+  
+
   }
 }

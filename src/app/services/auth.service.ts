@@ -7,9 +7,9 @@ export class AuthService {
 
   constructor() { }
 
-  login(userName:String) : JSON{
+  login(userName:String) : any{
     // Muestra drive (redirigir)
-    return // json de respuesta
+    return { res : true }// json de respuesta
   }
 
   register(bytes:Number, userName:String) : JSON{
