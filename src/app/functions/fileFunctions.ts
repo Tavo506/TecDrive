@@ -21,6 +21,6 @@ export function newCarpeta(){
 }
 
 
-function getToday(){
-    
+export function getToday(){
+
 }
