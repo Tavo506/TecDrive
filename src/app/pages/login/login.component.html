@@ -1,3 +1,4 @@
+
 <div class="bg-img">
 
     <section class="view intro-2">
@@ -9,9 +10,9 @@
                     </div>
                     <form class="col-12">
                         <div class="form-group" id="user">
-                            <input type="text" class="form-control" placeholder="Nombre de usuario"/>
+                            <input type="text" class="form-control" placeholder="Nombre de usuario" id = "inputUser" />
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" id = "buttonLogIn" (click)="sendUserName()">
                             <i class="fas fa-sign-in-alt"></i>  Log in
                         </button>
                     </form>
