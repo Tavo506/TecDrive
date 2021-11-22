@@ -17,6 +17,7 @@ export interface Archivo {
 
 
 export interface Carpeta {
+    limite? : number,
     nombre : string,
     tipo : "carpeta",
     creacion : string,
