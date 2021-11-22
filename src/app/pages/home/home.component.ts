@@ -223,10 +223,10 @@ export class HomeComponent implements OnInit {
 
 
 
-  descargar(archivo : Contenido){
-    if (archivo.contenido.tipo == "archivo") {
-      const text = archivo.contenido.contenido;
-      const filename = archivo.contenido.nombre + "." + archivo.contenido.extension;
+  descargar(archivo : Archivo){
+    if (archivo.tipo == "archivo") {
+      const text = archivo.contenido;
+      const filename = archivo.nombre + "." + archivo.extension;
 
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
