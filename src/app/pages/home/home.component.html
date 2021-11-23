@@ -15,6 +15,7 @@
             </div>
         </div>
         <button class="btn" (click)="refresh()"><i class="fas fa-sync"></i> Recargar</button>
+        <button *ngIf="haySeleccion" class="btn" (click)="eliminar()"><i class="fas fa-trash-alt"></i> Eliminar</button>
     </div>
 
 
@@ -39,7 +40,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let fila of pathActual.contenido">
-                <td class="align-middle"><input type="checkbox"></td>
+                <td class="align-middle"><input (click)="seleccionarArchivo(fila)" type="checkbox"></td>
                 <td class="align-middle">
                     <i class="fas big-icon"
                         [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
@@ -59,7 +60,7 @@
                                 ngbDropdownItem>Abrir</button>
                             <button (click)="open(fila)" *ngIf="fila.tipo == 'archivo'" ngbDropdownItem>Editar</button>
                             <button (click)="compartir(fila)" ngbDropdownItem>Compartir</button>
-                            <button (click)="descargar(fila)" ngbDropdownItem>Descargar</button>
+                            <button *ngIf="fila.tipo=='archivo'" (click)="descargar(fila)" ngbDropdownItem>Descargar</button>
                             <button (click)="copiar(fila)" ngbDropdownItem>Copiar</button>
                             <button (click)="mover(fila)" ngbDropdownItem>Mover</button>
                             <button (click)="verPropiedades(fila)" ngbDropdownItem>Propiedades</button>

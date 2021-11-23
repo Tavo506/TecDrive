@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   
   sendUserName(username:string){
     
-    username = username.replace(" ","_");
+    username = username.replace(/ /gi,"_");
     if(username === ''){
       Swal.fire({
         title : "Error 101",

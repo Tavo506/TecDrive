@@ -176,10 +176,37 @@ export class DriveService {
     
 
 
-    modificarArchivo(path:string, archivo: Archivo){
+    async modificarArchivo(path:string, archivo: Archivo) : Promise<any>{
         const nombre = archivo.nombre;
-        const tipo = archivo.extension;
-        const contenido = archivo.contenido;
+        const contenido = archivo.contenido.replace(/\n/gi, "%0A");
+        const extension = archivo.extension;
+
+        const body = {
+            extension: extension,
+            contenido: contenido,
+            nombre: nombre,
+            path: path
+        }
+
+
+        //const enlace = `${this.url}modificarArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenido}`;
+        const enlace = `${this.url}modificarArchivo`;
+
+        console.log(body);
+        
+
+        console.log(enlace);
+        
+
+
+        return new Promise((response, reject) => {
+
+            this.http.post(enlace, body).subscribe(res => {
+
+                response(res);
+            })
+            
+        })
 
 
         //modificarArchivo(path, nombre, tipo, contenido);
@@ -234,7 +261,7 @@ export class DriveService {
 
         
 
-        const enlace = `${this.url}delete?path=${path}&nombres=${strNombres}&tiposArchivo=${strTipos}`;
+        const enlace = `${this.url}Delete?path=${path}&nombres=${strNombres}&tiposArchivo=${strTipos}`;
 
         console.log(enlace);
         

@@ -30,6 +30,9 @@ export class HomeComponent implements OnInit {
 
   path: string[] = [];
 
+  nombresSeleccionados: string[] = []
+  tiposSeleccionados: string[] = []
+
   constructor(
     private driveService: DriveService,
     private activatedRoute: ActivatedRoute,
@@ -69,17 +72,66 @@ export class HomeComponent implements OnInit {
 
 
 
-  refresh() {
+  refresh(go = false) {
     this.driveService.getDrive(this.usuario).then(res => {
       this.datos = res;
       this.pathActual = this.clone(this.datos);
 
-
-      this.go(this.path);
-
+      if (go) {
+        this.go(this.path);
+      }
 
     });
   }
+
+
+  seleccionarArchivo(archivo: Archivo | Carpeta){
+
+    const tipo = archivo.tipo == "carpeta" ? archivo.tipo : archivo.extension
+    const nombre = archivo.nombre;
+
+    var iNombre, iTipo;
+    var agregar = true;
+    var index;
+    
+    for (let i = 0; i < this.nombresSeleccionados.length; i++) {
+      iNombre = this.nombresSeleccionados[i];
+      iTipo = this.tiposSeleccionados[i];
+
+      if (tipo == iTipo && nombre == iNombre) {
+        agregar = false;
+        index = i;
+        break;
+      }
+    }
+
+
+    if (agregar) {
+      this.nombresSeleccionados.push(nombre);
+      this.tiposSeleccionados.push(tipo);
+    }else{
+      this.nombresSeleccionados.splice(index, 1);
+      this.tiposSeleccionados.splice(index, 1);
+    }
+
+
+    console.log(this.nombresSeleccionados);
+    console.log(this.tiposSeleccionados);
+
+  }
+
+
+  limpiarSeleccion(){
+    
+    this.nombresSeleccionados = [];
+    this.tiposSeleccionados = [];
+  }
+
+
+  get haySeleccion(){
+    return this.nombresSeleccionados.length > 0
+  }
+
 
 
   /*
@@ -100,12 +152,12 @@ export class HomeComponent implements OnInit {
 
 
         this.driveService.crearArchivo(this.getUserPath(), result.res.nombre, result.res.extension, result.res.texto).then(res => {
-          
+
           console.log(res);
 
           if (res.OK) {
             this.refresh();
-          }else{
+          } else {
             Swal.fire({
               title: "Error",
               icon: "error",
@@ -241,11 +293,15 @@ export class HomeComponent implements OnInit {
     modalRef.result.then((result) => {
 
       if (result.accion == 'guardar' && result.res != archivo.contenido) {
-
-        console.log("Hay cambios");
         archivo.contenido = result.res;
 
-        this.driveService.modificarArchivo(this.getUserPath(), archivo)
+        this.driveService.modificarArchivo(this.getUserPath(), archivo).then(res => {
+          console.log(res);
+
+          if (res.OK) {
+            this.refresh();
+          }
+        })
 
       }
 
@@ -277,7 +333,7 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const usuario = result.value.replace(" ", "_");
+        const usuario = result.value.replace(/ /gi, "_");
         const tipo = contenido.tipo == "archivo" ? contenido.extension : "carpeta";
         this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo)
 
@@ -374,8 +430,31 @@ export class HomeComponent implements OnInit {
 
 
 
-  prepararParaEliminar(listaArchivos: string[], listaTipos: string[], archivo) {
+  eliminar() {
+    Swal.fire({
+      title: `¿Eliminar los archivos seleccionados?`,
+      text: "Esta acción no se puede deshacer",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.driveService.eliminar(this.getUserPath(), this.nombresSeleccionados, this.tiposSeleccionados).then(res => {
 
+          this.refresh();
+          this.limpiarSeleccion();
+
+          Swal.fire(
+            'Eliminado!',
+            'El contenido se ha eliminado',
+            'success'
+          )
+        });
+      }
+    })
   }
 
 
@@ -406,6 +485,7 @@ export class HomeComponent implements OnInit {
       if (result.isConfirmed) {
         this.driveService.eliminar(this.getUserPath(), [nombre], [extension]).then(res => {
 
+          this.refresh();
 
           Swal.fire(
             'Eliminado!',
@@ -431,18 +511,25 @@ export class HomeComponent implements OnInit {
   goToPath(path: string[], carpeta: string) {
     path.push(carpeta);
     this.go(path);
+    this.limpiarSeleccion()
+    
   }
 
 
   go(path: string[]) {
     this.pathActual = this.clone(this.datos);
     var lista;
-    path.forEach(e => {
-      lista = this.pathActual.contenido as Object;
-      lista = lista.filter(n => n.nombre == e)[0] as Contenido
-      this.pathActual = lista;
 
-    })
+    for (let index = 0; index < path.length; index++) {
+      const e = path[index];
+      
+      
+        lista = this.pathActual.contenido as Object;
+        lista = lista.filter(n => n.nombre == e)[0] as Contenido
+        this.pathActual = lista;
+    }
+    
+    return
 
   }
 
@@ -460,19 +547,37 @@ export class HomeComponent implements OnInit {
         if (e == ruta) {
           parar = true;
 
-          this.path = newPath;
-
-          this.go(newPath);
+          if (this.path != newPath) {
+           
+            
+            this.path = newPath;
+            
+            this.go(newPath);
+            this.limpiarSeleccion()
+          }
         }
       }
     });
+
+    return
 
   }
 
 
   goToRoot() {
-    this.pathActual = this.clone(this.datos);
-    this.path = []
+    
+    
+    if (this.path.length > 0) {
+      
+      
+      this.pathActual = this.clone(this.datos);
+      this.path = []
+
+      this.limpiarSeleccion()
+    }
+    
+
+    return
   }
 
 
