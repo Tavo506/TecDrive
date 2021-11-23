@@ -9,6 +9,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { NavbarComponent } from './widgets/navbar/navbar.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { directorySearchModal } from './widgets/modals/directorySearch';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -22,7 +24,8 @@ import { directorySearchModal } from './widgets/modals/directorySearch';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

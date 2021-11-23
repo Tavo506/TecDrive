@@ -1,13 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Archivo, Contenido } from '../models/Contenido.model';
+import { config } from "./config";
+
 
 @Injectable({
     providedIn: 'root'
 })
+
+
+
+
+
 export class DriveService {
 
-    constructor() { }
 
+    url = `http://${config.IP}${config.base}`
+
+
+    constructor(private http:HttpClient) { }
 
 
     dummy: any = {
@@ -119,8 +130,20 @@ export class DriveService {
 
 
 
+
+
     getDrive(userName: string): Contenido {
 
+        const enlace = `${this.url}LogIn?username=${userName}`;
+
+        console.log(this.url);
+
+        this.http.get(enlace).subscribe(res => {
+            console.log(res);
+            
+        });
+        
+        //this.http.get()
         return this.dummy[userName] as Contenido;
     }
 
