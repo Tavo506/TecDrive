@@ -10,7 +10,7 @@ export interface Archivo {
     extension : string,
     creacion : string,
     modificacion : string,
-    tamaño : number,
+    tamano : number,
     contenido : string,
     compartido : string[]
 }
@@ -22,7 +22,7 @@ export interface Carpeta {
     tipo : "carpeta",
     creacion : string,
     modificacion : string,
-    tamaño : number,
+    tamano : number,
     contenido? : Contenido[]
     compartido : string[],
 }

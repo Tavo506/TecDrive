@@ -9,7 +9,7 @@ export function newArchivo() : Archivo{
         extension: "",
         modificacion: "",
         nombre: "",
-        tamaño: 0,
+        tamano: 0,
         tipo: "archivo"
     }
 

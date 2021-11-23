@@ -42,9 +42,11 @@ export class HomeComponent implements OnInit {
       this.usuario = params["user"]
     })
 
-    this.datos = this.driveService.getDrive(this.usuario);
-    this.pathActual = this.clone(this.datos);
-
+    this.driveService.getDrive(this.usuario).then(res => {
+      this.datos = res;
+      this.pathActual = this.clone(this.datos);
+      
+    });
     this.modalConfig.backdrop = 'static';
     this.modalConfig.keyboard = false;
   }
@@ -188,7 +190,7 @@ export class HomeComponent implements OnInit {
         var spliData = file.name.split('.')
         archivo.nombre = spliData[0];
         archivo.extension = spliData[1];
-        archivo.tamaño = file.size;
+        archivo.tamano = file.size;
         file.text().then( data => {archivo.contenido = data});
         return archivo;
     }

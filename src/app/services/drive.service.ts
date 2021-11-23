@@ -4,6 +4,7 @@ import { Archivo, Contenido } from '../models/Contenido.model';
 import { config } from "./config";
 
 
+
 @Injectable({
     providedIn: 'root'
 })
@@ -132,19 +133,25 @@ export class DriveService {
 
 
 
-    getDrive(userName: string): Contenido {
+    async getDrive(userName: string): Promise<Contenido> {
 
         const enlace = `${this.url}LogIn?username=${userName}`;
 
         console.log(this.url);
 
-        this.http.get(enlace).subscribe(res => {
-            console.log(res);
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                console.log(res);
+                response(res as Contenido);
+            })
             
-        });
+        })
+
         
         //this.http.get()
-        return this.dummy[userName] as Contenido;
     }
 
 

@@ -66,7 +66,7 @@ export class propiedadesModal {
 
         this.creacion = this.contenido.creacion;
         this.modificacion = this.contenido.modificacion;
-        this.tamanno = formatBytes(this.contenido.tamaño);
+        this.tamanno = formatBytes(this.contenido.tamano);
 
     }
 
