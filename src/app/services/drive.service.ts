@@ -137,14 +137,10 @@ export class DriveService {
 
         const enlace = `${this.url}LogIn?username=${userName}`;
 
-        console.log(this.url);
-
 
         return new Promise((response, reject) => {
 
             this.http.get(enlace).subscribe(res => {
-
-                console.log(res);
                 response(res as Contenido);
             })
             
@@ -155,21 +151,32 @@ export class DriveService {
     }
 
 
-    crearArchivo(path:String, nombre:String, extension:String, contenido:String){
-        // Revisa si hay un nombre repetido y hay espacio
-        return // json de respuesta
+    async crearArchivo(path:string, nombre:string, extension:string, contenido:string) : Promise<any>{
+        
+
+        const enlace = `${this.url}crearArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenido}`;
+
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                response(res);
+            })
+            
+        })
     }
     
     
     
-    crearDirectorio(path:String, nombre:String){
+    crearDirectorio(path:string, nombre:string){
         // Revisa si hay un nombre repetido y hay espacio
         return // json de respuesta
     }
     
 
 
-    modificarArchivo(path:String, archivo: Archivo){
+    modificarArchivo(path:string, archivo: Archivo){
         const nombre = archivo.nombre;
         const tipo = archivo.extension;
         const contenido = archivo.contenido;
@@ -195,7 +202,7 @@ export class DriveService {
 
 
 
-    copiar(path:String, nombre:String, tipoArchivo:String, nuevoPath:String){
+    copiar(path:string, nombre:string, tipoArchivo:string, nuevoPath:string){
         console.log(path);
         console.log(nombre);
         console.log(tipoArchivo);
@@ -207,7 +214,7 @@ export class DriveService {
 
 
 
-    mover(path:String, nombre:String, tipoArchivo:String, nuevoPath:String){
+    mover(path:string, nombre:string, tipoArchivo:string, nuevoPath:string){
 
         this.copiar(path, nombre, tipoArchivo, nuevoPath);
 
@@ -218,14 +225,29 @@ export class DriveService {
 
 
 
-    eliminar(path:String, nombres:String[], tiposArchivo:String[]){
+    async eliminar(path:string, nombres:string[], tiposArchivo:string[]) : Promise<any>{
+        var strNombres = nombres.join("/");
+        var strTipos = tiposArchivo.join("/");
         console.log(path);
-        console.log(nombres);
-        console.log(tiposArchivo);
+        console.log(strNombres);
+        console.log(strTipos);
 
         
 
-        //eliminar(path, nombres, tiposArchivo);
+        const enlace = `${this.url}delete?path=${path}&nombres=${strNombres}&tiposArchivo=${strTipos}`;
+
+        console.log(enlace);
+        
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                console.log(res);
+                response(res);
+            })
+            
+        })
         
     }
 

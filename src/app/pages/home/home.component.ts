@@ -7,9 +7,10 @@ import { directorySearchModal } from 'src/app/widgets/modals/directorySearch';
 import { fileCreateModal } from 'src/app/widgets/modals/fileCreate';
 import { fileViewModal } from 'src/app/widgets/modals/fileView';
 import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
-import { newArchivo, newCarpeta }  from 'src/app/functions/fileFunctions';
+import { newArchivo, newCarpeta } from 'src/app/functions/fileFunctions';
 import Swal from 'sweetalert2'
 import { HtmlParser } from '@angular/compiler';
+import { sizeOfFile } from 'src/app/functions/sizeFunctions';
 
 
 
@@ -45,7 +46,7 @@ export class HomeComponent implements OnInit {
     this.driveService.getDrive(this.usuario).then(res => {
       this.datos = res;
       this.pathActual = this.clone(this.datos);
-      
+
     });
     this.modalConfig.backdrop = 'static';
     this.modalConfig.keyboard = false;
@@ -62,9 +63,22 @@ export class HomeComponent implements OnInit {
 
 
 
+  getUserPath(): string {
+    return `${this.usuario}/${this.path.join("/")}`;
+  }
+
+
 
   refresh() {
+    this.driveService.getDrive(this.usuario).then(res => {
+      this.datos = res;
+      this.pathActual = this.clone(this.datos);
 
+
+      this.go(this.path);
+
+
+    });
   }
 
 
@@ -84,7 +98,22 @@ export class HomeComponent implements OnInit {
 
         console.log(result.res);
 
-        this.driveService.crearArchivo(this.path.join("/"), result.res.nombre, result.res.extension, result.res.text)
+
+        this.driveService.crearArchivo(this.getUserPath(), result.res.nombre, result.res.extension, result.res.texto).then(res => {
+          
+          console.log(res);
+
+          if (res.OK) {
+            this.refresh();
+          }else{
+            Swal.fire({
+              title: "Error",
+              icon: "error",
+              text: "Error al crear el archivo"
+            })
+          }
+
+        })
 
 
       }
@@ -111,7 +140,7 @@ export class HomeComponent implements OnInit {
         const archivo = result.value;
         console.log(archivo);
 
-        this.driveService.crearDirectorio(this.path.join("/"), archivo);
+        this.driveService.crearDirectorio(this.getUserPath(), archivo);
 
       }
     })
@@ -141,9 +170,9 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-           var file : Archivo = this.parsearArchivo(result.value);
-           console.log(file)
-          //Falta enviar el archivo
+        var file: Archivo = this.parsearArchivo(result.value);
+        console.log(file)
+        //Falta enviar el archivo
       }
     })
 
@@ -155,23 +184,23 @@ export class HomeComponent implements OnInit {
 
     Swal.fire({
       title: "Cargar una carpeta",
-     html: "<input type='file' webkitdirectory directory multiple id=directory >",
-     preConfirm: () =>  {  return document.getElementById('directory')},
+      html: "<input type='file' webkitdirectory directory multiple id=directory >",
+      preConfirm: () => { return document.getElementById('directory') },
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        var refDirectory : FileList = (<HTMLInputElement>result.value).files
+        var refDirectory: FileList = (<HTMLInputElement>result.value).files
         console.log((<HTMLInputElement>result.value).files.length)
-        var listFiles : any[] = []
-        for(let i=0; i< (<HTMLInputElement>result.value).files.length; i++){
-          var file : Archivo = this.parsearArchivo((<HTMLInputElement>result.value).files[i]);
+        var listFiles: any[] = []
+        for (let i = 0; i < (<HTMLInputElement>result.value).files.length; i++) {
+          var file: Archivo = this.parsearArchivo((<HTMLInputElement>result.value).files[i]);
           listFiles.push(file)
           console.log(file)
         }
-        
+
         //Carga el archivo
       }
     })
@@ -179,21 +208,21 @@ export class HomeComponent implements OnInit {
   }
 
 
-/*
-      ========================================
-        Funciones para carga de archivos
-      ========================================
-  */
+  /*
+        ========================================
+          Funciones para carga de archivos
+        ========================================
+    */
 
-    parsearArchivo(file : File) :  Archivo{
-        var archivo : Archivo = newArchivo();
-        var spliData = file.name.split('.')
-        archivo.nombre = spliData[0];
-        archivo.extension = spliData[1];
-        archivo.tamano = file.size;
-        file.text().then( data => {archivo.contenido = data});
-        return archivo;
-    }
+  parsearArchivo(file: File): Archivo {
+    var archivo: Archivo = newArchivo();
+    var spliData = file.name.split('.')
+    archivo.nombre = spliData[0];
+    archivo.extension = spliData[1];
+    archivo.tamano = file.size;
+    file.text().then(data => { archivo.contenido = data });
+    return archivo;
+  }
 
 
   /*
@@ -216,7 +245,7 @@ export class HomeComponent implements OnInit {
         console.log("Hay cambios");
         archivo.contenido = result.res;
 
-        this.driveService.modificarArchivo(this.path.join("/"), archivo)
+        this.driveService.modificarArchivo(this.getUserPath(), archivo)
 
       }
 
@@ -250,7 +279,7 @@ export class HomeComponent implements OnInit {
       if (result.isConfirmed) {
         const usuario = result.value.replace(" ", "_");
         const tipo = contenido.tipo == "archivo" ? contenido.extension : "carpeta";
-        this.driveService.compartir(this.usuario, usuario, this.path.join("/"), contenido.nombre, tipo)
+        this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo)
 
       }
     })
@@ -314,11 +343,11 @@ export class HomeComponent implements OnInit {
 
     this.seleccionarCarpeta().then(rutaCopiar => {
 
-      if (rutaCopiar.confirm) {      
+      if (rutaCopiar.confirm) {
 
         const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
 
-        this.driveService.copiar(this.path.join("/"), archivo.nombre, tipo, rutaCopiar.value.join("/"));
+        this.driveService.copiar(this.getUserPath(), archivo.nombre, tipo, rutaCopiar.value.join("/"));
       }
 
     });
@@ -334,7 +363,7 @@ export class HomeComponent implements OnInit {
 
         const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
 
-        this.driveService.mover(this.path.join("/"), archivo.nombre, tipo, rutaCopiar.value.join("/"));
+        this.driveService.mover(this.getUserPath(), archivo.nombre, tipo, rutaCopiar.value.join("/"));
       }
 
     });
@@ -350,7 +379,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  eliminarUno(path: string[], archivo: Archivo | Carpeta) {
+  eliminarUno(archivo: Archivo | Carpeta) {
     var nombre = archivo.nombre;
     var extension = "";
     var mensaje = nombre;
@@ -375,13 +404,15 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.driveService.eliminar(path.join("/"), [nombre], [extension]);
+        this.driveService.eliminar(this.getUserPath(), [nombre], [extension]).then(res => {
 
-        Swal.fire(
-          'Eliminado!',
-          'El contenido se ha eliminado',
-          'success'
-        )
+
+          Swal.fire(
+            'Eliminado!',
+            'El contenido se ha eliminado',
+            'success'
+          )
+        });
       }
     })
 
