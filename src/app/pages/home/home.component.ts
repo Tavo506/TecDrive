@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit {
 
   nombresSeleccionados: string[] = []
   tiposSeleccionados: string[] = []
+  indexSeleccionados: number[] = []
 
   constructor(
     private driveService: DriveService,
@@ -72,20 +73,19 @@ export class HomeComponent implements OnInit {
 
 
 
-  refresh(go = false) {
+  refresh() {
     this.driveService.getDrive(this.usuario).then(res => {
       this.datos = res;
       this.pathActual = this.clone(this.datos);
 
-      if (go) {
-        this.go(this.path);
-      }
+      this.go(this.path);
+      this.limpiarSeleccion();
 
     });
   }
 
 
-  seleccionarArchivo(archivo: Archivo | Carpeta){
+  seleccionarArchivo(archivo: Archivo | Carpeta, i: number) {
 
     const tipo = archivo.tipo == "carpeta" ? archivo.tipo : archivo.extension
     const nombre = archivo.nombre;
@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
     var iNombre, iTipo;
     var agregar = true;
     var index;
-    
+
     for (let i = 0; i < this.nombresSeleccionados.length; i++) {
       iNombre = this.nombresSeleccionados[i];
       iTipo = this.tiposSeleccionados[i];
@@ -109,26 +109,32 @@ export class HomeComponent implements OnInit {
     if (agregar) {
       this.nombresSeleccionados.push(nombre);
       this.tiposSeleccionados.push(tipo);
-    }else{
+      this.indexSeleccionados.push(i);
+    } else {
       this.nombresSeleccionados.splice(index, 1);
       this.tiposSeleccionados.splice(index, 1);
+      this.indexSeleccionados.splice(index, 1);
     }
 
-
-    console.log(this.nombresSeleccionados);
-    console.log(this.tiposSeleccionados);
-
   }
 
 
-  limpiarSeleccion(){
-    
+
+  estaSeleccionado(i: number){
+   
+    return this.indexSeleccionados.includes(i);
+  }
+
+
+  limpiarSeleccion() {
+
     this.nombresSeleccionados = [];
     this.tiposSeleccionados = [];
+    this.indexSeleccionados = [];
   }
 
 
-  get haySeleccion(){
+  get haySeleccion() {
     return this.nombresSeleccionados.length > 0
   }
 
@@ -148,21 +154,40 @@ export class HomeComponent implements OnInit {
 
       if (result.accion == 'guardar') {
 
-        console.log(result.res);
+        var nombre = result.res.nombre;
+        var extension = result.res.extension
+        var texto = result.res.texto;
 
 
-        this.driveService.crearArchivo(this.getUserPath(), result.res.nombre, result.res.extension, result.res.texto).then(res => {
-
-          console.log(res);
+        this.driveService.crearArchivo(this.getUserPath(), nombre, extension, texto).then(res => {
 
           if (res.OK) {
             this.refresh();
           } else {
             Swal.fire({
-              title: "Error",
-              icon: "error",
-              text: "Error al crear el archivo"
-            })
+              title: `¿Sobreescribir archivo?`,
+              text: "Esta acción no se puede deshacer",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.driveService.modificarArchivo(this.getUserPath(), nombre, extension, texto, true).then(res2 => {
+                  if (!res2.OK) {
+                    Swal.fire(
+                      "Error",
+                      "Error al sobreescribir el archivo",
+                      "error"
+                    )
+                  } else {
+                    this.refresh();
+                  }
+                })
+              }
+            });
           }
 
         })
@@ -189,10 +214,36 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const archivo = result.value;
-        console.log(archivo);
+        const nombre = result.value;
 
-        this.driveService.crearDirectorio(this.getUserPath(), archivo);
+        this.driveService.crearDirectorio(this.getUserPath(), nombre).then(res => {
+
+          if (res.OK) {
+
+            this.refresh()
+
+          } else {
+
+            Swal.fire({
+              title: `¿Sobreescribir directorio?`,
+              text: "Esta acción no se puede deshacer",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.driveService.crearDirectorio(this.getUserPath(), nombre, true);
+                this.refresh();
+              }
+
+            });
+
+          }
+
+        });
 
       }
     })
@@ -223,8 +274,47 @@ export class HomeComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         var file: Archivo = this.parsearArchivo(result.value);
-        console.log(file)
-        //Falta enviar el archivo
+        
+        setTimeout(() => {
+          
+          console.log(file)
+
+          this.driveService.crearArchivo(this.getUserPath(), file.nombre, file.extension, file.contenido).then(res => {
+
+            if (res.OK) {
+              this.refresh();
+            } else {
+              Swal.fire({
+                title: `¿Sobreescribir archivo?`,
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.driveService.modificarArchivo(this.getUserPath(), file.nombre, file.extension, file.contenido, true).then(res2 => {
+                    if (!res2.OK) {
+                      Swal.fire(
+                        "Error",
+                        "Error al sobreescribir el archivo",
+                        "error"
+                      )
+                    } else {
+                      this.refresh();
+                    }
+                  })
+                }
+              });
+            }
+
+          })
+
+        }, 500);
+
+
       }
     })
 
@@ -273,6 +363,7 @@ export class HomeComponent implements OnInit {
     archivo.extension = spliData[1];
     archivo.tamano = file.size;
     file.text().then(data => { archivo.contenido = data });
+
     return archivo;
   }
 
@@ -295,8 +386,7 @@ export class HomeComponent implements OnInit {
       if (result.accion == 'guardar' && result.res != archivo.contenido) {
         archivo.contenido = result.res;
 
-        this.driveService.modificarArchivo(this.getUserPath(), archivo).then(res => {
-          console.log(res);
+        this.driveService.modificarArchivo(this.getUserPath(), archivo.nombre, archivo.extension, archivo.contenido).then(res => {
 
           if (res.OK) {
             this.refresh();
@@ -335,7 +425,7 @@ export class HomeComponent implements OnInit {
       if (result.isConfirmed) {
         const usuario = result.value.replace(/ /gi, "_");
         const tipo = contenido.tipo == "archivo" ? contenido.extension : "carpeta";
-        this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo)
+        this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo);
 
       }
     })
@@ -403,7 +493,23 @@ export class HomeComponent implements OnInit {
 
         const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
 
-        this.driveService.copiar(this.getUserPath(), archivo.nombre, tipo, rutaCopiar.value.join("/"));
+        this.driveService.copiar(this.getUserPath(), archivo.nombre, tipo, this.usuario + "/" + rutaCopiar.value.join("/")).then(res => {
+
+          if (res.OK) {
+            this.refresh();
+            Swal.fire({
+              title: "Archivo copiado!",
+              icon: "success"
+            })
+          } else {
+            Swal.fire({
+              title: "Error",
+              icon: "error",
+              text: "El archivo ya existe en la ruta seleccionada"
+            })
+          }
+
+        });
       }
 
     });
@@ -419,7 +525,23 @@ export class HomeComponent implements OnInit {
 
         const tipo = archivo.tipo == "archivo" ? archivo.extension : "carpeta";
 
-        this.driveService.mover(this.getUserPath(), archivo.nombre, tipo, rutaCopiar.value.join("/"));
+        this.driveService.mover(this.getUserPath(), archivo.nombre, tipo, this.usuario + "/" + rutaCopiar.value.join("/")).then(res => {
+
+          if (res.OK) {
+            this.refresh();
+            Swal.fire({
+              title: "Archivo movido!",
+              icon: "success"
+            })
+          } else {
+            Swal.fire({
+              title: "Error",
+              icon: "error",
+              text: "El archivo ya existe en la ruta seleccionada"
+            })
+          }
+
+        });
       }
 
     });
@@ -468,7 +590,7 @@ export class HomeComponent implements OnInit {
       mensaje += `.${extension}`;
 
     } else {
-      extension = "Directorio";
+      extension = "carpeta";
     }
 
 
@@ -512,7 +634,7 @@ export class HomeComponent implements OnInit {
     path.push(carpeta);
     this.go(path);
     this.limpiarSeleccion()
-    
+
   }
 
 
@@ -522,13 +644,13 @@ export class HomeComponent implements OnInit {
 
     for (let index = 0; index < path.length; index++) {
       const e = path[index];
-      
-      
-        lista = this.pathActual.contenido as Object;
-        lista = lista.filter(n => n.nombre == e)[0] as Contenido
-        this.pathActual = lista;
+
+
+      lista = this.pathActual.contenido as Object;
+      lista = lista.filter(n => n.nombre == e && n.tipo == 'carpeta')[0] as Contenido
+      this.pathActual = lista;
     }
-    
+
     return
 
   }
@@ -548,10 +670,10 @@ export class HomeComponent implements OnInit {
           parar = true;
 
           if (this.path != newPath) {
-           
-            
+
+
             this.path = newPath;
-            
+
             this.go(newPath);
             this.limpiarSeleccion()
           }
@@ -565,17 +687,17 @@ export class HomeComponent implements OnInit {
 
 
   goToRoot() {
-    
-    
+
+
     if (this.path.length > 0) {
-      
-      
+
+
       this.pathActual = this.clone(this.datos);
       this.path = []
 
       this.limpiarSeleccion()
     }
-    
+
 
     return
   }

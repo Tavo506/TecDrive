@@ -51,7 +51,7 @@ export class directorySearchModal {
         var lista;
         path.forEach(e => {
             lista = this.pathActual.contenido as Object;
-            lista = lista.filter(n => n.nombre == e)[0] as Contenido
+            lista = lista.filter(n => n.nombre == e && n.tipo == 'carpeta')[0] as Contenido
             this.pathActual = lista;
 
         })

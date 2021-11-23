@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'file-create-modal',
@@ -29,7 +30,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-danger" (click)="activeModal.close({accion: 'cancelado', res: {}})">Cerrar</button>
-        <button type="button" class="btn btn-outline-success" (click)="activeModal.close({accion: 'guardar', res: {nombre: nombre, extension: extension, texto: texto}})">Guardar</button>
+        <button type="button" class="btn btn-outline-success" (click)="guardar()">Guardar</button>
     </div>
   `
 })
@@ -39,4 +40,25 @@ export class fileCreateModal {
     texto: string = "";
 
     constructor(public activeModal: NgbActiveModal) { }
+
+    guardar(){
+
+        if (this.nombre.trim() == "" || this.nombre.includes('/') || this.nombre.includes('&') || this.nombre.includes('=') || this.nombre.includes(':') || this.nombre.includes('\\')) {
+            Swal.fire({
+                title: "Error",
+                html: "<p>Nombre inválido</p> <p>caracteres no permitidos: ('/', '&', '=', ':'. '\\')</p>",
+                icon: "warning"
+            });
+            return;
+        }else if (this.extension.trim() == "" || this.extension == "carpeta" || this.nombre.trim() == "" || this.nombre.includes('/') || this.nombre.includes('&') || this.nombre.includes('=') || this.nombre.includes(':') || this.nombre.includes('\\')) {
+            Swal.fire({
+                title: "Error",
+                html: "<p>Nombre inválido</p> <p>caracteres no permitidos: ('/', '&', '=', ':'. '\\')</p><p>No se permite la extensión 'carpeta'</p>",
+                icon: "warning"
+            });
+            return;
+        }
+
+        this.activeModal.close({accion: 'guardar', res: {nombre: this.nombre, extension: this.extension, texto: this.texto}})
+    }
 }

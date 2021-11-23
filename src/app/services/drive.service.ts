@@ -152,10 +152,12 @@ export class DriveService {
 
 
     async crearArchivo(path:string, nombre:string, extension:string, contenido:string) : Promise<any>{
+        const contenidoF = contenido.replace(/\n/gi, "%0A");
         
+        const enlace = `${this.url}crearArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenidoF}`;
 
-        const enlace = `${this.url}crearArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenido}`;
-
+        console.log(enlace);
+        
 
         return new Promise((response, reject) => {
 
@@ -169,47 +171,42 @@ export class DriveService {
     
     
     
-    crearDirectorio(path:string, nombre:string){
-        // Revisa si hay un nombre repetido y hay espacio
-        return // json de respuesta
+    async crearDirectorio(path:string, nombre:string, sobreescribir : boolean = false) : Promise<any>{
+        const enlace = `${this.url}crearDirectorio?path=${path}&nombre=${nombre}&sobreescribir=${sobreescribir}`;
+
+        console.log(enlace);
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                response(res);
+            })
+            
+        })
     }
     
 
 
-    async modificarArchivo(path:string, archivo: Archivo) : Promise<any>{
-        const nombre = archivo.nombre;
-        const contenido = archivo.contenido.replace(/\n/gi, "%0A");
-        const extension = archivo.extension;
-
-        const body = {
-            extension: extension,
-            contenido: contenido,
-            nombre: nombre,
-            path: path
-        }
+    async modificarArchivo(path:string, nombre:string, extension:string, contenido:string, sobreescribir : boolean = false) : Promise<any>{
+        const contenidoF = contenido.replace(/\n/gi, "%0A");
 
 
-        //const enlace = `${this.url}modificarArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenido}`;
-        const enlace = `${this.url}modificarArchivo`;
 
-        console.log(body);
-        
-
+        const enlace = `${this.url}modificarArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenidoF}&sobreescribir=${sobreescribir}`;
+      
         console.log(enlace);
-        
 
 
         return new Promise((response, reject) => {
 
-            this.http.post(enlace, body).subscribe(res => {
+            this.http.get(enlace).subscribe(res => {
 
                 response(res);
             })
             
         })
 
-
-        //modificarArchivo(path, nombre, tipo, contenido);
         
     }
 
@@ -229,23 +226,49 @@ export class DriveService {
 
 
 
-    copiar(path:string, nombre:string, tipoArchivo:string, nuevoPath:string){
+    async copiar(path:string, nombre:string, tipoArchivo:string, nuevoPath:string) : Promise<any>{
         console.log(path);
         console.log(nombre);
         console.log(tipoArchivo);
         console.log(nuevoPath);
 
-        //copiar(path, nombre, tipoArchivo, nuevoPath);
+        const enlace = `${this.url}CopiarVV?path=${path}&nombre=${nombre}&tipoArchivo=${tipoArchivo}&nuevoPath=${nuevoPath}`;
+      
+        console.log(enlace);
+
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                response(res);
+            })
+            
+        })
 
     }
 
 
 
-    mover(path:string, nombre:string, tipoArchivo:string, nuevoPath:string){
+    async mover(path:string, nombre:string, tipoArchivo:string, nuevoPath:string) : Promise<any>{
+        console.log(path);
+        console.log(nombre);
+        console.log(tipoArchivo);
+        console.log(nuevoPath);
 
-        this.copiar(path, nombre, tipoArchivo, nuevoPath);
+        const enlace = `${this.url}Mover?path=${path}&nombre=${nombre}&tipoArchivo=${tipoArchivo}&nuevoPath=${nuevoPath}`;
+      
+        console.log(enlace);
 
-        this.eliminar(path, [nombre], [tipoArchivo])
+
+        return new Promise((response, reject) => {
+
+            this.http.get(enlace).subscribe(res => {
+
+                response(res);
+            })
+            
+        })
 
     }
 

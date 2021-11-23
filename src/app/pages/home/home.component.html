@@ -39,8 +39,16 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let fila of pathActual.contenido">
-                <td class="align-middle"><input (click)="seleccionarArchivo(fila)" type="checkbox"></td>
+            <tr *ngFor="let fila of pathActual.contenido; let i = index">
+                <td class="align-middle" (click)="seleccionarArchivo(fila, i)">
+                    <!-- <input (click)="seleccionarArchivo(fila)" type="checkbox"> -->
+                    <button class="btn" *ngIf="estaSeleccionado(i)">
+                        <i class="far fa-check-square big-icon"></i>
+                    </button>
+                    <button class="btn" *ngIf="!estaSeleccionado(i)">
+                        <i class="far fa-square big-icon"></i>
+                    </button>
+                </td>
                 <td class="align-middle">
                     <i class="fas big-icon"
                         [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
