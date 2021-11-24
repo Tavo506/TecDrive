@@ -2,9 +2,6 @@ export interface Contenido {
     contenido : Archivo | Carpeta
 }
 
-export interface Drive{
-    drive : Contenido
-}
 
 
 export interface Archivo {
@@ -13,18 +10,19 @@ export interface Archivo {
     extension : string,
     creacion : string,
     modificacion : string,
-    tamaño : number,
+    tamano : number,
     contenido : string,
     compartido : string[]
 }
 
 
 export interface Carpeta {
+    limite? : number,
     nombre : string,
     tipo : "carpeta",
     creacion : string,
     modificacion : string,
-    tamaño : number,
+    tamano : number,
     contenido? : Contenido[]
     compartido : string[],
 }

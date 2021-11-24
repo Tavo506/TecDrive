@@ -1,0 +1,45 @@
+.contenedor {
+    margin-top: 50px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.enlace:hover {
+    cursor: pointer;
+    color: #0055dd;
+}
+
+.enlace{
+    color: black;
+}
+
+.big-icon{
+    font-size: 22px;
+}
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+.eliminar:hover, .eliminar:focus {
+    background: #d9534f;
+    color: white;
+}
+
+.swal-wide{
+    width:850px !important;
+}
+
+
+
+
+nav button:hover{
+    color: rgb(0, 101, 253);
+    background: rgb(255, 255, 255);
+}
+

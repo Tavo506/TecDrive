@@ -1,0 +1,40 @@
+<div class="modal-header">
+
+    <h2>Carpeta de destino</h2>
+        
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('cancelado')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body" style="height: 50vh;">
+    
+    <span (click)="goToRoot()" class="enlace">{{usuario}}</span>
+    <span *ngFor="let ruta of path"> / <span (click)="goBackTo(ruta)" class="enlace">{{ruta}}</span></span>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col-2" style="width: 20%"><i class="fas fa-file"></i></th>
+                <th scope="col-10" style="width: 80%">Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fila of pathActual.contenido" >
+                <td class="align-middle" *ngIf="fila.tipo == 'carpeta'">
+                    <i class="fas big-icon"
+                        [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
+                </td>
+                <td class="align-middle" *ngIf="fila.tipo == 'carpeta'">
+                    <span class="enlace" 
+                        (click)="goToPath(path, fila.nombre)">{{fila.nombre}}</span>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="activeModal.close({accion: 'cancelado', res: []})">Cancelar</button>
+    <button type="button" class="btn btn-outline-success" (click)="activeModal.close({accion: 'guardar', res: path})">Seleccionar</button>
+</div>

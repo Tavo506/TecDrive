@@ -1,2 +1,89 @@
-<p>{{datos | json}}</p>
-<p>{{usuario}}</p>
+<nav class="navbar navbar-dark bg-light justify-content-left">
+    <div>
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn" id="dropdownNuevo" ngbDropdownToggle><i class="fas fa-plus"></i> Nuevo <i class="fas fa-caret-down"></i></button>
+            <div ngbDropdownMenu aria-labelledby="dropdownNuevo">
+                <button (click)="crearArchivo()" ngbDropdownItem>Archivo</button>
+                <button (click)="crearCarpeta()" ngbDropdownItem>Directorio</button>
+            </div>
+        </div>
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn" id="dropdownCargar" ngbDropdownToggle><i class="fas fa-upload"></i> Cargar <i class="fas fa-caret-down"></i></button>
+            <div ngbDropdownMenu aria-labelledby="dropdownCargar">
+                <button (click)="cargarArchivo()" ngbDropdownItem>Archivo</button>
+                <button (click)="cargarCarpeta()" ngbDropdownItem>Directorio</button>
+            </div>
+        </div>
+        <button class="btn" (click)="refresh()"><i class="fas fa-sync"></i> Recargar</button>
+        <button *ngIf="haySeleccion" class="btn" (click)="eliminar()"><i class="fas fa-trash-alt"></i> Eliminar</button>
+    </div>
+    
+    <button class="btn" (click)="verInfo()"><i class="fas fa-info-circle"></i> Información</button>
+
+
+</nav>
+
+
+<div class="contenedor">
+
+
+    <span (click)="goToRoot()" class="enlace">{{usuario}}</span>
+    <span *ngFor="let ruta of path"> / <span (click)="goBackTo(ruta)" class="enlace">{{ruta}}</span></span>
+
+    <table class="table" *ngIf="pathActual">
+        <thead>
+            <tr>
+                <th scope="col-1" style="width: 10%"></th>
+                <th scope="col-1" style="width: 10%"><i class="fas fa-file"></i></th>
+                <th scope="col-8" style="width: 70%">Nombre</th>
+                <th scope="col-2" style="width: 10%">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fila of pathActual.contenido; let i = index">
+                <td class="align-middle" (click)="seleccionarArchivo(fila, i)">
+                    <!-- <input (click)="seleccionarArchivo(fila)" type="checkbox"> -->
+                    <button class="btn" *ngIf="estaSeleccionado(i)">
+                        <i class="far fa-check-square big-icon"></i>
+                    </button>
+                    <button class="btn" *ngIf="!estaSeleccionado(i)">
+                        <i class="far fa-square big-icon"></i>
+                    </button>
+                </td>
+                <td class="align-middle">
+                    <i class="fas big-icon"
+                        [ngClass]="{'fa-file-alt' : fila.tipo == 'archivo', 'fa-folder' : fila.tipo == 'carpeta'}"></i>
+                </td>
+                <td class="align-middle">
+                    <span class="enlace" *ngIf="fila.tipo == 'archivo'"
+                        (click)="open(fila)">{{fila.nombre}}.{{fila.extension}}</span>
+                    <span class="enlace" *ngIf="fila.tipo == 'carpeta'"
+                        (click)="goToPath(path, fila.nombre)">{{fila.nombre}}</span>
+                </td>
+                <td class="align-middle">
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn" id="dropdownAcciones" ngbDropdownToggle><i
+                                class="fas big-icon fa-ellipsis-v"></i></button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownAcciones">
+                            <button (click)="goToPath(path, fila.nombre)" *ngIf="fila.tipo == 'carpeta'"
+                                ngbDropdownItem>Abrir</button>
+                            <button (click)="open(fila)" *ngIf="fila.tipo == 'archivo'" ngbDropdownItem>Editar</button>
+                            <button (click)="compartir(fila)" ngbDropdownItem>Compartir</button>
+                            <button *ngIf="fila.tipo=='archivo'" (click)="descargar(fila)" ngbDropdownItem>Descargar</button>
+                            <button (click)="copiar(fila)" ngbDropdownItem>Copiar</button>
+                            <button (click)="mover(fila)" ngbDropdownItem>Mover</button>
+                            <button (click)="verPropiedades(fila)" ngbDropdownItem>Propiedades</button>
+                            <hr>
+                            <button (click)="eliminarUno(fila)" class="eliminar" ngbDropdownItem>Eliminar</button>
+                        </div>
+                    </div>
+
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+
+</div>

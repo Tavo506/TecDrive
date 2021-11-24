@@ -1,1 +1,14 @@
-<p>navbar works!</p>
+<nav class="navbar navbar-dark bg-primary justify-content-between">
+    <a href="/home/Usuario_1" class="navbar-brand">TecDrive</a>
+
+    <div *ngIf=!logueado>
+        <a href="/login">Login</a>
+        <a> / </a>
+        <a href="/register">Register</a>
+    </div>
+
+    <div *ngIf=logueado>
+        <a href="/login">Salir</a>
+    </div>
+    
+</nav>
