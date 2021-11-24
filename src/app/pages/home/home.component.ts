@@ -120,8 +120,8 @@ export class HomeComponent implements OnInit {
 
 
 
-  estaSeleccionado(i: number){
-   
+  estaSeleccionado(i: number) {
+
     return this.indexSeleccionados.includes(i);
   }
 
@@ -274,47 +274,7 @@ export class HomeComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         var file: Archivo = this.parsearArchivo(result.value);
-        
-        setTimeout(() => {
-          
-          console.log(file)
-
-          this.driveService.crearArchivo(this.getUserPath(), file.nombre, file.extension, file.contenido).then(res => {
-
-            if (res.OK) {
-              this.refresh();
-            } else {
-              Swal.fire({
-                title: `¿Sobreescribir archivo?`,
-                text: "Esta acción no se puede deshacer",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar',
-                cancelButtonText: 'Cancelar'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.driveService.modificarArchivo(this.getUserPath(), file.nombre, file.extension, file.contenido, true).then(res2 => {
-                    if (!res2.OK) {
-                      Swal.fire(
-                        "Error",
-                        "Error al sobreescribir el archivo",
-                        "error"
-                      )
-                    } else {
-                      this.refresh();
-                    }
-                  })
-                }
-              });
-            }
-
-          })
-
-        }, 500);
-
-
+        this.sendFileBackEnd(file)
       }
     })
 
@@ -334,27 +294,39 @@ export class HomeComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        var refDirectory: FileList = (<HTMLInputElement>result.value).files
-        console.log((<HTMLInputElement>result.value).files.length)
-        var listFiles: any[] = []
-        for (let i = 0; i < (<HTMLInputElement>result.value).files.length; i++) {
-          var file: Archivo = this.parsearArchivo((<HTMLInputElement>result.value).files[i]);
-          listFiles.push(file)
-          console.log(file)
-        }
 
+        var directoryName = this.getDirectoryName((<any>(<HTMLInputElement>result.value).files[0]).webkitRelativePath)
+        console.log(directoryName)
+        var ruta = this.getUserPath() + '/' + directoryName;
+        ruta = ruta.replace('//','/')
+        this.driveService.crearDirectorio(this.getUserPath(), this.getDirectoryName((<any>(<HTMLInputElement>result.value).files[0]).webkitRelativePath)).then(res => {
+          if (res.OK) {
+
+            this.refresh();
+            setTimeout(() => {
+
+
+              for (let i = 0; i < (<HTMLInputElement>result.value).files.length; i++) {
+                var file: Archivo = this.parsearArchivo((<HTMLInputElement>result.value).files[i]);
+                console.log(file)
+                this.sendFileBackEnd(file, ruta);
+              }
+            }, 2000);
+
+          } else {
+            Swal.fire(
+              "Error",
+              res.Error,
+              "error"
+            )
+          }
+
+        });
         //Carga el archivo
       }
     })
 
   }
-
-
-  /*
-        ========================================
-          Funciones para carga de archivos
-        ========================================
-    */
 
   parsearArchivo(file: File): Archivo {
     var archivo: Archivo = newArchivo();
@@ -365,6 +337,53 @@ export class HomeComponent implements OnInit {
     file.text().then(data => { archivo.contenido = data });
 
     return archivo;
+  }
+
+  getDirectoryName(string: string): string {
+    var splitString = string.split('/');
+    return (splitString[0])
+  }
+
+  sendFileBackEnd(file: Archivo, directory: string = this.getUserPath()) {
+
+    setTimeout(() => {
+
+      console.log(file)
+
+      this.driveService.crearArchivo(directory, file.nombre, file.extension, file.contenido).then(res => {
+
+        if (res.OK) {
+          this.refresh();
+        } else {
+          Swal.fire({
+            title: `¿Sobreescribir archivo?`,
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.driveService.modificarArchivo(directory, file.nombre, file.extension, file.contenido, true).then(res2 => {
+                if (!res2.OK) {
+                  Swal.fire(
+                    "Error",
+                    "Error al sobreescribir el archivo",
+                    "error"
+                  )
+                } else {
+                  this.refresh();
+                }
+              })
+            }
+          });
+        }
+
+      })
+
+    }, 500);
   }
 
 
@@ -430,12 +449,12 @@ export class HomeComponent implements OnInit {
           if (res.OK) {
             Swal.fire({
               title: "Archivo compartido!",
-              icon:"success"
+              icon: "success"
             })
-          }else{
+          } else {
             Swal.fire({
               title: "Error!",
-              icon:"error",
+              icon: "error",
               text: res.Error
             })
           }
