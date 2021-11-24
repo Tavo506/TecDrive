@@ -31,10 +31,19 @@ export class LoginComponent implements OnInit {
       })
       return
     ;}
-    if(this.authService.login(username).res = true){
-      console.log(username)
-      this.router.navigate(["/home",username]);
-    }
+    
+    this.authService.login(username).then(res => {
+
+      if (res.Error) {
+        Swal.fire(
+          'Error!',
+          res.Error,
+          'error'
+        )
+      }else{
+        this.router.navigate(["/home",username]);
+      }
+    });
   
 
   }
