@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
       } else {
         console.log(res);
         
-        this.router.navigate(["/home",username]);
+        this.router.navigate(["/home",username.replace(/ /gi, "_")]);
       }
 
     });

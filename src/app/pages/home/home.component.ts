@@ -10,7 +10,7 @@ import { propiedadesModal } from 'src/app/widgets/modals/propiedades';
 import { newArchivo, newCarpeta } from 'src/app/functions/fileFunctions';
 import Swal from 'sweetalert2'
 import { HtmlParser } from '@angular/compiler';
-import { sizeOfFile } from 'src/app/functions/sizeFunctions';
+import { formatBytes, sizeOfFile } from 'src/app/functions/sizeFunctions';
 
 
 
@@ -122,6 +122,8 @@ export class HomeComponent implements OnInit {
   verInfo(){
     const modalRef = this.modalService.open(propiedadesModal, { scrollable: true, centered: true });
     modalRef.componentInstance.contenido = this.datos;
+    modalRef.componentInstance.maximo = formatBytes((this.datos as unknown as Carpeta).limite);
+    modalRef.componentInstance.mensajeMaximo = "Tamaño máximo: "
     modalRef.componentInstance.build();
   }
 
