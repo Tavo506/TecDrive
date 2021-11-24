@@ -425,7 +425,22 @@ export class HomeComponent implements OnInit {
       if (result.isConfirmed) {
         const usuario = result.value.replace(/ /gi, "_");
         const tipo = contenido.tipo == "archivo" ? contenido.extension : "carpeta";
-        this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo);
+        this.driveService.compartir(this.usuario, usuario, this.getUserPath(), contenido.nombre, tipo).then(res => {
+
+          if (res.OK) {
+            Swal.fire({
+              title: "Archivo compartido!",
+              icon:"success"
+            })
+          }else{
+            Swal.fire({
+              title: "Error!",
+              icon:"error",
+              text: res.Error
+            })
+          }
+
+        });
 
       }
     })
@@ -554,7 +569,7 @@ export class HomeComponent implements OnInit {
 
   eliminar() {
     Swal.fire({
-      title: `¿Eliminar los archivos seleccionados?`,
+      title: `¿Eliminar los ${this.nombresSeleccionados.length} archivos seleccionados?`,
       text: "Esta acción no se puede deshacer",
       icon: 'warning',
       showCancelButton: true,

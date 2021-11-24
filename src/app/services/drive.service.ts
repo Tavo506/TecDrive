@@ -128,7 +128,16 @@ export class DriveService {
 
 
 
+    
+    async callService(enlace) : Promise<any> {
+        return new Promise((response, reject) => {
 
+            this.http.get(enlace).subscribe(res => {
+                response(res);
+            })
+            
+        })
+    }
 
 
 
@@ -137,17 +146,9 @@ export class DriveService {
 
         const enlace = `${this.url}LogIn?username=${userName}`;
 
+        const res = await this.callService(enlace) as Contenido;
 
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-                response(res as Contenido);
-            })
-            
-        })
-
-        
-        //this.http.get()
+        return res;
     }
 
 
@@ -156,17 +157,9 @@ export class DriveService {
         
         const enlace = `${this.url}crearArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenidoF}`;
 
-        console.log(enlace);
-        
+        const res = await this.callService(enlace);
 
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-
-                response(res);
-            })
-            
-        })
+        return res;
     }
     
     
@@ -176,14 +169,9 @@ export class DriveService {
 
         console.log(enlace);
 
-        return new Promise((response, reject) => {
+        const res = await this.callService(enlace);
 
-            this.http.get(enlace).subscribe(res => {
-
-                response(res);
-            })
-            
-        })
+        return res;
     }
     
 
@@ -195,32 +183,30 @@ export class DriveService {
 
         const enlace = `${this.url}modificarArchivo?path=${path}&nombre=${nombre}&extension=${extension}&contenido=${contenidoF}&sobreescribir=${sobreescribir}`;
       
-        console.log(enlace);
+        const res = await this.callService(enlace);
 
-
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-
-                response(res);
-            })
-            
-        })
+        return res;
 
         
     }
 
 
 
-    compartir(usuario: string, nuevoUsuario:string, path: string, nombre:string, tipoArchivo:string){
-        console.log(usuario);
-        console.log(nuevoUsuario);
-        console.log(path);
-        console.log(nombre);
-        console.log(tipoArchivo);
+    async compartir(usuario: string, nuevoUsuario:string, path: string, nombre:string, tipoArchivo:string) : Promise<any>{
+        // console.log(usuario);
+        // console.log(nuevoUsuario);
+        // console.log(path);
+        // console.log(nombre);
+        // console.log(tipoArchivo);
         
-        //if nuevoUsuario existe
-        //compartir(usuario, nuevoUsuario, path, nombre, tipoArchivo);
+        const enlace = `${this.url}Compartir?usuario=${usuario}&nuevoUsuario=${nuevoUsuario}&path=${path}&nombre=${nombre}&tipoArchivo=${tipoArchivo}`;
+      
+        console.log(enlace);
+
+
+        const res = await this.callService(enlace);
+
+        return res;
     }
 
 
@@ -234,17 +220,10 @@ export class DriveService {
 
         const enlace = `${this.url}CopiarVV?path=${path}&nombre=${nombre}&tipoArchivo=${tipoArchivo}&nuevoPath=${nuevoPath}`;
       
-        console.log(enlace);
 
+        const res = await this.callService(enlace);
 
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-
-                response(res);
-            })
-            
-        })
+        return res;
 
     }
 
@@ -258,17 +237,9 @@ export class DriveService {
 
         const enlace = `${this.url}Mover?path=${path}&nombre=${nombre}&tipoArchivo=${tipoArchivo}&nuevoPath=${nuevoPath}`;
       
-        console.log(enlace);
+        const res = await this.callService(enlace);
 
-
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-
-                response(res);
-            })
-            
-        })
+        return res;
 
     }
 
@@ -286,18 +257,9 @@ export class DriveService {
 
         const enlace = `${this.url}Delete?path=${path}&nombres=${strNombres}&tiposArchivo=${strTipos}`;
 
-        console.log(enlace);
-        
+        const res = await this.callService(enlace);
 
-        return new Promise((response, reject) => {
-
-            this.http.get(enlace).subscribe(res => {
-
-                console.log(res);
-                response(res);
-            })
-            
-        })
+        return res;
         
     }
 
