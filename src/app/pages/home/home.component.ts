@@ -119,6 +119,13 @@ export class HomeComponent implements OnInit {
   }
 
 
+  verInfo(){
+    const modalRef = this.modalService.open(propiedadesModal, { scrollable: true, centered: true });
+    modalRef.componentInstance.contenido = this.datos;
+    modalRef.componentInstance.build();
+  }
+
+
 
   estaSeleccionado(i: number){
    
@@ -161,9 +168,11 @@ export class HomeComponent implements OnInit {
 
         this.driveService.crearArchivo(this.getUserPath(), nombre, extension, texto).then(res => {
 
+          console.log(res);
+          
           if (res.OK) {
             this.refresh();
-          } else {
+          } else if (res.Error == `El nombre '${nombre}' ya existe en la ruta actual.`) {
             Swal.fire({
               title: `¿Sobreescribir archivo?`,
               text: "Esta acción no se puede deshacer",
@@ -188,6 +197,12 @@ export class HomeComponent implements OnInit {
                 })
               }
             });
+          }else{
+            Swal.fire(
+              "Error",
+              res.Error,
+              "error"
+            )
           }
 
         })
